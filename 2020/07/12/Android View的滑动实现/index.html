@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Android View的滑动实现 | JcyDs' Blog</title><meta name="description" content="Android View的滑动实现View的位置参数View的位置主要由四个顶点决定的 top、left、right、bottom，对应源码中的mLeft、mRight、mTop和mBottom这四个成员变量。四个参数的坐标值都是相对论于父容器左上顶点为坐标系原点来决定的。View的宽高也可以直接通过四个顶点的值来确定： 12width &#x3D; right - leftheight &amp;#x3"><meta name="keywords" content="Android, View"><meta name="author" content="Chunyu"><meta name="copyright" content="Chunyu"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/headimg.jpg"><link rel="canonical" href="http://yoursite.com/2020/07/12/Android%20View%E7%9A%84%E6%BB%91%E5%8A%A8%E5%AE%9E%E7%8E%B0/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="Android View的滑动实现"><meta property="og:url" content="http://yoursite.com/2020/07/12/Android%20View%E7%9A%84%E6%BB%91%E5%8A%A8%E5%AE%9E%E7%8E%B0/"><meta property="og:site_name" content="JcyDs' Blog"><meta property="og:description" content="Android View的滑动实现View的位置参数View的位置主要由四个顶点决定的 top、left、right、bottom，对应源码中的mLeft、mRight、mTop和mBottom这四个成员变量。四个参数的坐标值都是相对论于父容器左上顶点为坐标系原点来决定的。View的宽高也可以直接通过四个顶点的值来确定： 12width &#x3D; right - leftheight &amp;#x3"><meta property="og:image" content="http://yoursite.com/img/cover/13.jpg"><meta property="article:published_time" content="2020-07-12T08:06:26.661Z"><meta property="article:modified_time" content="2020-07-12T09:51:14.470Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="Android中的Context" href="http://yoursite.com/2020/05/08/Android%E4%B8%AD%E7%9A%84Context/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: false,
+  copyright: {"languages":{"author":"作者: Chunyu","link":"链接: ","source":"来源: JcyDs' Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/headimg.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">2</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">1</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-View的滑动实现"><span class="toc-number">1.</span> <span class="toc-text">Android View的滑动实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#View的位置参数"><span class="toc-number">1.1.</span> <span class="toc-text">View的位置参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MotionEvent-和-TouchSlop"><span class="toc-number">1.2.</span> <span class="toc-text">MotionEvent 和 TouchSlop</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MotionEvent"><span class="toc-number">1.2.1.</span> <span class="toc-text">MotionEvent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TouchSlop"><span class="toc-number">1.2.2.</span> <span class="toc-text">TouchSlop</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VelocityTracker、GestureDetector和Scroller"><span class="toc-number">1.3.</span> <span class="toc-text">VelocityTracker、GestureDetector和Scroller</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VelocityTracker"><span class="toc-number">1.3.1.</span> <span class="toc-text">VelocityTracker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GestureDetector"><span class="toc-number">1.3.2.</span> <span class="toc-text">GestureDetector</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Scroller"><span class="toc-number">1.3.3.</span> <span class="toc-text">Scroller</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#View的滑动"><span class="toc-number">1.4.</span> <span class="toc-text">View的滑动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#scrollTo-scrollBy-实现滑动"><span class="toc-number">1.4.1.</span> <span class="toc-text">scrollTo&#x2F;scrollBy 实现滑动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用动画"><span class="toc-number">1.4.2.</span> <span class="toc-text">使用动画</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#改变LayoutParams"><span class="toc-number">1.4.3.</span> <span class="toc-text">改变LayoutParams</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover/13.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">JcyDs' Blog</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Android View的滑动实现</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-07-12 16:06:26"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2020-07-12</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-07-12 17:51:14"><i class="fas fa-history fa-fw"></i> 更新于 2020-07-12</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="Android-View的滑动实现"><a href="#Android-View的滑动实现" class="headerlink" title="Android View的滑动实现"></a>Android View的滑动实现</h1><h2 id="View的位置参数"><a href="#View的位置参数" class="headerlink" title="View的位置参数"></a>View的位置参数</h2><p>View的位置主要由四个顶点决定的 top、left、right、bottom，对应源码中的mLeft、mRight、mTop和mBottom这四个成员变量。四个参数的坐标值都是<strong>相对论于父容器左上顶点为坐标系原点</strong>来决定的。View的宽高也可以直接通过四个顶点的值来确定：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">width &#x3D; right - left</span><br><span class="line">height &#x3D; bottom - top</span><br></pre></td></tr></table></figure>
+
+<p>Android3.0后增加了几个额外的参数x、y、translationX和translationY。</p>
+<p>其中x和y是View左上角的坐标，而translationX和translationY是View左上角相对于父容器的偏移量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x &#x3D; left + translationX</span><br><span class="line">y &#x3D; top + translationY</span><br></pre></td></tr></table></figure>
+
+<p>translationX和translationY指的是当View发生位移时，相对原点的偏移。如果没有移动则为0。</p>
+<h2 id="MotionEvent-和-TouchSlop"><a href="#MotionEvent-和-TouchSlop" class="headerlink" title="MotionEvent 和 TouchSlop"></a>MotionEvent 和 TouchSlop</h2><h3 id="MotionEvent"><a href="#MotionEvent" class="headerlink" title="MotionEvent"></a>MotionEvent</h3><p>在手指接触屏幕后产生的一系列事件，典型事件有：</p>
+<ul>
+<li>ACTION_DOWN——手指刚接触屏幕；</li>
+<li>ACTION_MOVE——手指在屏幕上移动；</li>
+<li>ACTION_UP——手机从屏幕上松开的一瞬间。</li>
+<li>ACTION_CANCEL——手指停留在屏幕上并滑出View的范围。 </li>
+</ul>
+<p>通过MotionEvent对象我们可以得到点击事件发生的x和y坐标。系统提供了两组方法：</p>
+<p>getX和getY：返回相对于当前View左上角的x和y坐标。</p>
+<p>getRawX和getRawY：返回的是相当与手机屏幕左上角的x和y坐标。</p>
+<h3 id="TouchSlop"><a href="#TouchSlop" class="headerlink" title="TouchSlop"></a>TouchSlop</h3><p>系统所能识别的最小滑动距离，在不同设备上这个值可能不同，通过<strong>ViewConfiguration.get(getContext()).getScaledTouchSlop()</strong>可以获取到该常量。</p>
+<p>在我们做滑动处理时，可以利用这个常量做一些过滤。</p>
+<h2 id="VelocityTracker、GestureDetector和Scroller"><a href="#VelocityTracker、GestureDetector和Scroller" class="headerlink" title="VelocityTracker、GestureDetector和Scroller"></a>VelocityTracker、GestureDetector和Scroller</h2><h3 id="VelocityTracker"><a href="#VelocityTracker" class="headerlink" title="VelocityTracker"></a>VelocityTracker</h3><p>速度追踪，用于追踪手指在滑动过程中的速度，包括水平和竖直方向的速度，在View的onTouchEvent方法中追踪当前点击事件的速度：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val velocityTracker &#x3D; VelocityTracker.obtain()</span><br><span class="line">velocityTracker.addMovement(event)</span><br></pre></td></tr></table></figure>
+
+<p>接着，当我们先知道当前的滑动速度时，这个时候可以采用如下方式来获得当前的速度：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">velocityTracker.computeCurrentVelocity(1000) &#x2F;&#x2F; 毫秒</span><br><span class="line">var xVelocity &#x3D; velocityTracker.xVelocity</span><br><span class="line">var yVelocity &#x3D; velocityTracker.yVelocity</span><br></pre></td></tr></table></figure>
+
+<p>获取速度之前必须计算速度，即获取 xVelocity和yVelocity之前要调用computeCurrentVelocity方法设置时间间隔。</p>
+<p>在1s内，手指在水平方向从左向右滑过100像素，那么水平速度就是100。注意速度可以为负数，当手指从右往左滑动时，水平方向速度即为负值。</p>
+<p>最后当不需要使用它的时候要调用clear方法回收内存：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">velocityTracker.clear()</span><br><span class="line">velocityTracker.recycle()</span><br></pre></td></tr></table></figure>
+
+<h3 id="GestureDetector"><a href="#GestureDetector" class="headerlink" title="GestureDetector"></a>GestureDetector</h3><p>手势检测，用于辅助检测用户的单击、滑动、长按、双击等行为。使用方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">val gestureDetector &#x3D; GestureDetector(this)  &#x2F;&#x2F; 创建对象</span><br><span class="line">gestureDetector.setIsLongpressEnabled(false) &#x2F;&#x2F; 关闭长按功能</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 在待监听的View的onTouchEvent方法中添加如下实现</span><br><span class="line">var consume &#x3D; gestureDetector.onTouchEvent(event)</span><br><span class="line">return consume</span><br></pre></td></tr></table></figure>
+
+<p>如果只是监听滑动相关的，建议自己在View的onTouchEvent中实现，如果要监听双击这种行为的话，那么就使用GestureDetector。</p>
+<h3 id="Scroller"><a href="#Scroller" class="headerlink" title="Scroller"></a>Scroller</h3><p>弹性滑动对象，用于实现View的弹性滑动，有过渡效果的滑动。</p>
+<p>当使用View的scrollTo/scrollBy方法来进行滑动时，其过程是瞬间完成的，这个没有过渡效果的滑动用户体验不好。</p>
+<p>Scorller本身无法让View弹性滑动，需要和View的computeScroll方法配合使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">val scroller &#x3D; Scroller(context)</span><br><span class="line">&#x2F;&#x2F; 缓慢滑动到指定位置</span><br><span class="line">private fun smoothScrollTo(destX: Int, destY: Int) &#123;</span><br><span class="line">	var scrollX &#x3D; getScrollX()</span><br><span class="line">	var delta &#x3D; destX - scrollX</span><br><span class="line">	scroller.startScroll(scrollX, 0, delta, 1000)</span><br><span class="line">	invalidate()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public fun computeScroll() &#123;</span><br><span class="line">	if (scroller.computeScrollOffset()) &#123;</span><br><span class="line">		scrollTo(scroller.getCurrX(), scroller.getCurrY())</span><br><span class="line">		postInvalidate()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>工作原理：当我们构造一个Scroller对象并且调用它的startScroll方法时，Scroller内部其实什么也没做，它只是保存了我们传递的几个参数。（startScroll方法）</p>
+<p>仅仅调用startScroll方法是无法让View发生滑动的，实际滑动是发生在 <strong>invalidate</strong>方法中，</p>
+<p>invalidate导致View重新绘制，在draw方法中又回调用computeScroll方法，</p>
+<p>computeScroll方法向Scroller获取当前的scrollX和scrollY，然后通过scrollTo方法实现滑动，</p>
+<p>接着调用postInvalidate()进行二次绘制，这一次重绘的过程和第一次重绘一样还会调用computeScroll方法然后继续向Scroller获取当前的scrollX和scrollY，并通过scrollTo方法滑动到新的位置，</p>
+<p>反复如此直到整个滑动过程结束，View才实现弹性滑动。</p>
+<p>再看一下computeScrollOffset方法的实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public fun computeScrollOffset(): Boolean &#123;</span><br><span class="line">	var timePassed &#x3D; (AnimationUtils.currentAnimationTimeMillis() - mStartTime) </span><br><span class="line">	if(timePassed &lt; mDuration) &#123;</span><br><span class="line">		when(mMode) &#123;</span><br><span class="line">		 SCROLL_MODE -&gt; &#123;</span><br><span class="line">		 	val x &#x3D; mInterpolator.getInterpolation(timePassed * mDurationReciprocal)</span><br><span class="line">		 	mCurrX &#x3D; mStaryX + Math.round(x * mDeltaX)</span><br><span class="line">		 	mCurrY &#x3D; mStaryY + Math.round(x * mDeltaY)</span><br><span class="line">		 &#125;</span><br><span class="line">		 ...</span><br><span class="line">		&#125;</span><br><span class="line">		return true</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>computeScrollOffset</strong>方法根据时间来计算出当前scrollX和scrollY的值。根据事件流逝的百分比计算出scrollX和scrollY改变的百分比并计算出当前的值。该过程类似于动画中的插值器。该方法返回为true表示当前滑动还没有结束，false则表示已经结束了。</p>
+<p>Scroller本身不能实现View的滑动，需要和View的computeScroll方法配合使用，Scroller不断的让View进行重绘，而每一次重绘距离滑动起始时间有一个时间间隔，通过时间间隔计算出当前View的滑动位置，知道了滑动位置通过scrollTo方法来完成View的滑动。</p>
+<p>整个过程中它对View没有丝毫的引用，甚至在它内部连计时器都没有。</p>
+<h2 id="View的滑动"><a href="#View的滑动" class="headerlink" title="View的滑动"></a>View的滑动</h2><p>通过三种方式可以实现View的滑动</p>
+<ol>
+<li>通过View本身提供的scrollTo/scrollBy方法实现滑动</li>
+<li>通过动画给View施加平移效果实现滑动</li>
+<li>通过改变View的LayoutParams使得View重新布局从而实现滑动</li>
+</ol>
+<h3 id="scrollTo-scrollBy-实现滑动"><a href="#scrollTo-scrollBy-实现滑动" class="headerlink" title="scrollTo/scrollBy 实现滑动"></a>scrollTo/scrollBy 实现滑动</h3><p>看源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public fun scrollTo(x: Int, y Int) &#123;</span><br><span class="line">	if(mScrollX !&#x3D; x || mScrollY !&#x3D; y) &#123;</span><br><span class="line">		val oldX &#x3D; mScrollX</span><br><span class="line">		val oldY &#x3D; mScrollY</span><br><span class="line">		mScrollX &#x3D; x</span><br><span class="line">		mScrollY &#x3D; y</span><br><span class="line">		invalidateParentCaches()</span><br><span class="line">		onScrollChanged(mScrollX, mScrollY, oldX, oldY)</span><br><span class="line">		if (!awakenScrollBars()) &#123;</span><br><span class="line">			postInvalidateOnAnimation()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**----------------------------------**&#x2F;</span><br><span class="line"></span><br><span class="line">public fun scrollBy(x: Int, y: Int) &#123;</span><br><span class="line">	scrollTo(mScrollX + x, mScrollY + y)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>scrollBy实际上也是调用了scrollTo方法， 实现了基于当前位置的相对滑动。</p>
+<p>scrollTo实现了基于所传递参数的绝对滑动。</p>
+<p>在滑动过程中，mScrollX的值总是等于View的left和View内容左边缘在水平方向的距离。同理 mScrollY是View的top和View内容的上边缘的距离。</p>
+<p>scrollTo和scrollBy只能改变View内容的位置而不能改变View在布局中的位置。</p>
+<p><strong>使用scrollTo和scrollBy实现View的滑动，只能将View的内容进行移动，并不是移动View本身。</strong></p>
+<h3 id="使用动画"><a href="#使用动画" class="headerlink" title="使用动画"></a>使用动画</h3><p>通过动画我们能够让一个View进行平移，而平移就是一种滑动。使用动画来移动View，主要是操作View的translationX和translationY属性，既可以采用传统的View动画，也可以采用属性动画。</p>
+<p>View动画是对View的影像做操作，它并不能真正改变View的位置参数，包括宽/高，并且如果希望动画后的状态得以保留还必须将fillAfter属性设置为true，否则动画完成后其动画结果会消失。</p>
+<p>比如我们要把View向右移动100像素，如果fillAfter为false，那么在动画完成的一刹那，View会瞬间恢复到动画前的位置；如果fillAfter为true，在动画完成后，View会停留在距原始位置100像素的右边。使用属性动画并不会存在上述问题。</p>
+<p>Android3.0以上使用属性动画不会有这些影像与位置不符的情况。</p>
+<h3 id="改变LayoutParams"><a href="#改变LayoutParams" class="headerlink" title="改变LayoutParams"></a>改变LayoutParams</h3><p>如果我们想把一个View向右平移100px，只需要将View的LayoutParams的marginLeft参数值增加100px即可。</p>
+<p>或者通过一个空白的View，改变这个空白View 的宽高，配合自适应的布局来实现移动。</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Chunyu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yoursite.com/2020/07/12/Android%20View%E7%9A%84%E6%BB%91%E5%8A%A8%E5%AE%9E%E7%8E%B0/">http://yoursite.com/2020/07/12/Android%20View%E7%9A%84%E6%BB%91%E5%8A%A8%E5%AE%9E%E7%8E%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yoursite.com" target="_blank">JcyDs' Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Android/">Android</a></div><div class="post_share"><div class="social-share" data-image="/img/cover/10.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/05/08/Android%E4%B8%AD%E7%9A%84Context/"><img class="next-cover" data-src="/img/cover/10.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Android中的Context</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/05/08/Android中的Context/" title="Android中的Context"><img class="relatedPosts_cover" data-src="/img/cover/10.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-05-08</div><div class="relatedPosts_title">Android中的Context</div></div></a></div></div></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By Chunyu</div><div class="framework-info"></div><div class="icp"><a href="http://www.beian.miit.gov.cn/state/outPortal/loginPortal.action" target="_blank" rel="noopener"><img class="icp-icon" src="/img/icp.png"/><span>吉ICP备17007589号</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">简</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
