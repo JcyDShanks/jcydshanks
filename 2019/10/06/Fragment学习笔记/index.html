@@ -1,0 +1,192 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fragment学习笔记 | JcyDs' Blog</title><meta name="description" content="Fragment Kotlin是什么Fragment 表示 FragmentActivity 中的行为或界面的一部分。你可以在一个Activity中组合多个Fragment，也可以在多个Activity中复用同一个Fragment。Fragment是Activity的模块化组成部分，具有自己的生命周期、接收自己的输入事件。 与Activity的关系Fragment必须始终托管在Activity中，"><meta name="keywords" content="Android, iOS, Flutter"><meta name="author" content="Chunyu"><meta name="copyright" content="Chunyu"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/headimg.jpg"><link rel="canonical" href="http://yoursite.com/2019/10/06/Fragment%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="Fragment学习笔记"><meta property="og:url" content="http://yoursite.com/2019/10/06/Fragment%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><meta property="og:site_name" content="JcyDs' Blog"><meta property="og:description" content="Fragment Kotlin是什么Fragment 表示 FragmentActivity 中的行为或界面的一部分。你可以在一个Activity中组合多个Fragment，也可以在多个Activity中复用同一个Fragment。Fragment是Activity的模块化组成部分，具有自己的生命周期、接收自己的输入事件。 与Activity的关系Fragment必须始终托管在Activity中，"><meta property="og:image" content="http://yoursite.com/img/cover/16.jpg"><meta property="article:published_time" content="2019-10-06T03:23:30.000Z"><meta property="article:modified_time" content="2020-07-08T11:53:44.414Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="prev" title="Android中的Context" href="http://yoursite.com/2020/05/08/Android%E4%B8%AD%E7%9A%84Context/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: false,
+  copyright: {"languages":{"author":"作者: Chunyu","link":"链接: ","source":"来源: JcyDs' Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/headimg.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">7</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">1</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fragment-Kotlin"><span class="toc-number">1.</span> <span class="toc-text">Fragment Kotlin</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#是什么"><span class="toc-number">1.1.</span> <span class="toc-text">是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#与Activity的关系"><span class="toc-number">1.2.</span> <span class="toc-text">与Activity的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计原理"><span class="toc-number">1.3.</span> <span class="toc-text">设计原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建Fragment"><span class="toc-number">1.4.</span> <span class="toc-text">创建Fragment</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#构造器"><span class="toc-number">1.4.0.1.</span> <span class="toc-text">构造器</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fragment的子类"><span class="toc-number">1.5.</span> <span class="toc-text">Fragment的子类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DialogFragment"><span class="toc-number">1.5.1.</span> <span class="toc-text">DialogFragment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ListFragment"><span class="toc-number">1.5.2.</span> <span class="toc-text">ListFragment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PreferenceFragment-已弃用"><span class="toc-number">1.5.3.</span> <span class="toc-text">PreferenceFragment 已弃用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加界面"><span class="toc-number">1.6.</span> <span class="toc-text">添加界面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#向Activity中添加Fragment"><span class="toc-number">1.7.</span> <span class="toc-text">向Activity中添加Fragment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#管理Fragment"><span class="toc-number">1.8.</span> <span class="toc-text">管理Fragment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#执行fragment的事务"><span class="toc-number">1.9.</span> <span class="toc-text">执行fragment的事务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#与Activity通信"><span class="toc-number">1.10.</span> <span class="toc-text">与Activity通信</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建Activity的事件回调"><span class="toc-number">1.11.</span> <span class="toc-text">创建Activity的事件回调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fragment的生命周期管理"><span class="toc-number">1.12.</span> <span class="toc-text">Fragment的生命周期管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#onCreate"><span class="toc-number">1.12.1.</span> <span class="toc-text">onCreate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#onCreateView"><span class="toc-number">1.12.2.</span> <span class="toc-text">onCreateView</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#onPause"><span class="toc-number">1.12.3.</span> <span class="toc-text">onPause</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#与Activity生命周期协调一致"><span class="toc-number">1.13.</span> <span class="toc-text">与Activity生命周期协调一致</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于添加多个Fragment的重叠问题"><span class="toc-number">1.14.</span> <span class="toc-text">关于添加多个Fragment的重叠问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fragment的生命周期与Activity的生命周期"><span class="toc-number">1.15.</span> <span class="toc-text">Fragment的生命周期与Activity的生命周期</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover/16.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">JcyDs' Blog</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Fragment学习笔记</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2019-10-06 11:23:30"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2019-10-06</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-07-08 19:53:44"><i class="fas fa-history fa-fw"></i> 更新于 2020-07-08</span></time></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="Fragment-Kotlin"><a href="#Fragment-Kotlin" class="headerlink" title="Fragment Kotlin"></a>Fragment Kotlin</h1><h2 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h2><p>Fragment 表示 FragmentActivity 中的行为或界面的一部分。<br>你可以在一个Activity中组合多个Fragment，也可以在多个Activity中复用同一个Fragment。<br>Fragment是Activity的模块化组成部分，具有自己的生命周期、接收自己的输入事件。</p>
+<h2 id="与Activity的关系"><a href="#与Activity的关系" class="headerlink" title="与Activity的关系"></a>与Activity的关系</h2><p>Fragment必须始终托管在Activity中，生命周期受宿主Activity的生命周期的影响。<br>在Activity运行时，可以将Fragment添加到由Activity管理的返回栈中，来添加或删除Fragment。借助返回栈，用户可以通过按<em>返回键</em>来后退。</p>
+<p>当Fragment作为Activity的布局一部分添加时，其位于Activity视图层次结构的某个ViewGroup中。</p>
+<h2 id="设计原理"><a href="#设计原理" class="headerlink" title="设计原理"></a>设计原理</h2><p>Android在3.0版本引入Fragment，<strong>主要目的</strong> 是为大屏幕上（如平板电脑）更加动态和灵活的界面设计提供支持。<br>组合和交换界面组件的场景下，利用Fragment实现此类设计时，无需管理对视图层次结构作出复杂更改。</p>
+<p>在设计Fragment的时候，应将其设计成可复用的模块化Activity组件。<br>由于每个Fragment都会通过各自的生命周期回调来定义自己的布局和行为，您可以将一个Fragment加入多个 Activity，因此，您应采用可复用式设计，避免直接通过某个Fragment操纵另一个Fragment。</p>
+<p>模块化Fragment允许您更改Fragment的组合方式，从而适应不同的场景。</p>
+<h2 id="创建Fragment"><a href="#创建Fragment" class="headerlink" title="创建Fragment"></a>创建Fragment</h2><p>创建继承自Fragment或其子类。Fragment与Activity非常相似，包含与Activity类似的生命周期方法，所有如果要将现有的Activity转换为Fragment，可能只需将代码从Activity的回调方法移入Fragment相应的回调方法中。</p>
+<h4 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h4><p>每个Fragment必须有一个空构造函数，当Restore的时候通过空构造函数实例化来还原原来的状态。 强烈建议不要将子类的构造函数加上参数，因为当重新实例化时不会调用这些构造函数。如需传参调用者通过setArguments传递参数，实例化的Fragment调用getArguments来获取。</p>
+<h2 id="Fragment的子类"><a href="#Fragment的子类" class="headerlink" title="Fragment的子类"></a>Fragment的子类</h2><h3 id="DialogFragment"><a href="#DialogFragment" class="headerlink" title="DialogFragment"></a>DialogFragment</h3><p>显示浮动对话框。使用此类创建对话框可有效代替使用 Activity 类中的对话框辅助方法，因为您可以将片段对话框纳入由 Activity 管理的片段返回栈，从而使用户能够返回清除的片段。</p>
+<h3 id="ListFragment"><a href="#ListFragment" class="headerlink" title="ListFragment"></a>ListFragment</h3><p>带有ListView的Fragment 在Rv盛行的当下，基本上已弃用。</p>
+<h3 id="PreferenceFragment-已弃用"><a href="#PreferenceFragment-已弃用" class="headerlink" title="PreferenceFragment 已弃用"></a>PreferenceFragment 已弃用</h3><p>以列表形式显示 Preference 对象的层次结构。此类用于为您的应用创建设置屏幕。</p>
+<h2 id="添加界面"><a href="#添加界面" class="headerlink" title="添加界面"></a>添加界面</h2><p>如果你的Fragment要绑定布局，则必须实现 <em>onCreateView</em> 回调方法。此方法的实现所返回的View必须是Fragment的根布局视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class ExampleFragment : Fragment() &#123;</span><br><span class="line"></span><br><span class="line">    override fun onCreateView(</span><br><span class="line">            inflater: LayoutInflater,</span><br><span class="line">            container: ViewGroup?,</span><br><span class="line">            savedInstanceState: Bundle?</span><br><span class="line">    ): View &#123;</span><br><span class="line">        &#x2F;&#x2F; Inflate the layout for this fragment</span><br><span class="line">        return inflater.inflate(R.layout.example_fragment, container, false)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>container 参数是您的fragment布局将插入到的父级 ViewGroup（来自 Activity 的布局）。<br>savedInstanceState 参数是在恢复片段时，提供上一片段实例相关数据的 Bundle 。</p>
+<p>inflate() 方法带有三个参数：</p>
+<ol>
+<li>您想要扩展的布局的资源 ID。</li>
+<li>将作为扩展布局父项的 ViewGroup。传递 container 对系统向扩展布局的根视图（由其所属的父视图指定）应用布局参数具有重要意义。</li>
+<li>指示是否应在扩展期间将扩展布局附加至 ViewGroup（第二个参数）的布尔值。（在本例中，此值为 false，因为系统已将扩展布局插入 container，而传递 true 值会在最终布局中创建一个多余的视图组。）</li>
+</ol>
+<h2 id="向Activity中添加Fragment"><a href="#向Activity中添加Fragment" class="headerlink" title="向Activity中添加Fragment"></a>向Activity中添加Fragment</h2><p>通常，fragment作为activity的视图层次的一部分嵌入在activity中。可以通过两种方式在activity中添加fragment：</p>
+<ul>
+<li><p>在XML中添加<br> 需要注意的是在xml添加的fragment标签下要有name属性来指定布局要实例化的fragment类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;LinearLayout xmlns:android&#x3D;&quot;http:&#x2F;&#x2F;schemas.android.com&#x2F;apk&#x2F;res&#x2F;android&quot;</span><br><span class="line">    android:orientation&#x3D;&quot;horizontal&quot;</span><br><span class="line">    android:layout_width&#x3D;&quot;match_parent&quot;</span><br><span class="line">    android:layout_height&#x3D;&quot;match_parent&quot;&gt;</span><br><span class="line">    &lt;fragment android:name&#x3D;&quot;com.example.news.ArticleListFragment&quot;</span><br><span class="line">            android:id&#x3D;&quot;@+id&#x2F;list&quot;</span><br><span class="line">            android:layout_weight&#x3D;&quot;1&quot;</span><br><span class="line">            android:layout_width&#x3D;&quot;0dp&quot;</span><br><span class="line">            android:layout_height&#x3D;&quot;match_parent&quot; &#x2F;&gt;</span><br><span class="line">    &lt;fragment android:name&#x3D;&quot;com.example.news.ArticleReaderFragment&quot;</span><br><span class="line">            android:id&#x3D;&quot;@+id&#x2F;viewer&quot;</span><br><span class="line">            android:layout_weight&#x3D;&quot;2&quot;</span><br><span class="line">            android:layout_width&#x3D;&quot;0dp&quot;</span><br><span class="line">            android:layout_height&#x3D;&quot;match_parent&quot; &#x2F;&gt;</span><br><span class="line">&lt;&#x2F;LinearLayout&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在代码中添加<br>在 Activity 运行期间，您可以随时将 Fragment 添加到 Activity 布局中。您只需指定要将片段放入哪个 ViewGroup。<br>如要在您的 Activity 中执行Fragment事务（如add、remove或replace片段），则必须使用 FragmentTransaction 中的 API。<br>如下所示，您可以从 FragmentActivity 获取一个 FragmentTransaction 实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val fragmentManager &#x3D; supportFragmentManager</span><br><span class="line">val fragmentTransaction &#x3D; fragmentManager.beginTransaction()</span><br></pre></td></tr></table></figure>
+<p>然后，使用add()方法添加一个fragment，指定要插入的fragment和要插入的视图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val fragment &#x3D; ExampleFragment()</span><br><span class="line">fragmentTransaction.add(R.id.fragment_container, fragment)</span><br><span class="line">fragmentTransaction.commit()</span><br></pre></td></tr></table></figure>
+<p>add方法的第一个参数是ViewGroup，即放置fragment的位置，第二个参数是要添加的fragment的实例。<br>最后需要调用commit方法来使更改生效。</p>
+</li>
+</ul>
+<p><em>如果在fragment上调用add方法，会造成重叠现象，原因是？TODO</em></p>
+<h2 id="管理Fragment"><a href="#管理Fragment" class="headerlink" title="管理Fragment"></a>管理Fragment</h2><p>在上面的步骤中我们说了添加操作，要管理Activity中的fragment，需要使用fragmentManager，通过supportFragmentManager来获取。<br>可以使<em>fragmentManager</em>执行的操作包括：</p>
+<ul>
+<li>通过 findFragmentById()（针对在 Activity 布局中提供界面的fragment）或 findFragmentByTag()（针对提供或不提供界面的fragment）获取 Activity 中存在的fragment。</li>
+<li>通过 popBackStack()（模拟用户发出的返回命令）使fragment从返回栈中弹出。</li>
+<li>通过 addOnBackStackChangedListener() 注册侦听返回栈变化的侦听器。<br>其他方法参阅fragmentManager的相关文档。</li>
+</ul>
+<h2 id="执行fragment的事务"><a href="#执行fragment的事务" class="headerlink" title="执行fragment的事务"></a>执行fragment的事务</h2><p>添加、移除和替换以及其他操作都是通过 fragmentTransaction 来进行的。提交给activity的每组更改都称之为事务，你可以使用FragmentTransaction中的API来执行一组事务。也可将每个事务保存到由activity管理的返回栈中，从而让用户能够回退Fragment更改。</p>
+<p>与add的步骤相同，可以调用fragmentTransaction的其他API， 如 remove() 和 replace() 等方法，最后调用commit方法。</p>
+<p>在调用commit方法之前，您可能希望调用addToBackStack(),来将事务添加到fragment事务返回栈中。该返回栈由activity管理，允许用户通过按返回键来返回上一个状态。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val newFragment &#x3D; ExampleFragment()</span><br><span class="line">val transaction &#x3D; supportFragmentManager.beginTransaction()</span><br><span class="line">transaction.replace(R.id.fragment_container, newFragment)</span><br><span class="line">transaction.addToBackStack(null)</span><br><span class="line">transaction.commit()</span><br></pre></td></tr></table></figure>
+<p><em>此时仍有重叠现象</em><br>newFragment会替换目前在R.id.fragment_container中的已有fragment，通过调用addToBackStack()，您可以将此次操作保存到返回栈中，以便用户通过按返回键撤销操作并返回到上一个fragment。<br>你也可以定义一组操作，然后调用addToBackStack()，这个时候再按返回键会撤销这一组操作。</p>
+<p>向 FragmentTransaction 添加更改的顺序无关紧要，不过：</p>
+<ul>
+<li>您必须最后调用 commit()。</li>
+<li>如果您要向同一容器添加多个fragment，则您添加的顺序将决定它们在视图层次结构中出现的顺序。</li>
+</ul>
+<p>如果您没有在执行删除fragment的事务时调用 addToBackStack()，则事务提交时该fragment会被销毁，用户将无法回退到该fragment。<br>不过，如果您在删除fragment时调用 addToBackStack()，则系统会停止该fragment，并随后在用户回退时将其恢复。</p>
+<p>对于每个片段事务，您都可通过在提交前调用 setTransition() 来应用过渡动画。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val fragment &#x3D; ExampleFragment()</span><br><span class="line">fragmentTransition.add(R.id.contentView, fragment)</span><br><span class="line">fragmentTransition.remove(fragment)</span><br><span class="line">fragmentTransition.addToBackStack(null) &#x2F;&#x2F; 注释这里</span><br><span class="line">fragmentTransition.commit()</span><br></pre></td></tr></table></figure>
+<p>以上代码如果注释掉第四行，则按一次back键，即可返回到上一个activity，<br>如果不注释，则需要按两次back键才可以返回到上一个activity。<br>但无论是否调用addToBackStack，ExampleFragment实例都不会展示出来。 <em>why？ TODO</em></p>
+<h2 id="与Activity通信"><a href="#与Activity通信" class="headerlink" title="与Activity通信"></a>与Activity通信</h2><p>尽管Fragment作为独立于FragmentActivity的对象实现，并且可在多个Activity内使用，但Fragment但给定实例会直接绑定到托管该Fragment的Activity。<br>Fragment可以通过 activity 属性访问到 FragmentActivity 的实例。<br>Activity中则可以通过fragmentManager的 findFragmentById() 或 findFragmentByTag() 方法来获取对 Fragment 的引用来调用Fragment中的方法。</p>
+<h2 id="创建Activity的事件回调"><a href="#创建Activity的事件回调" class="headerlink" title="创建Activity的事件回调"></a>创建Activity的事件回调</h2><p>在某些情况下，您可能需使用Fragment来与 Activity 和/或 Activity 托管的其他片段共享事件或数据。<br>实现共享数据有两种方式：</p>
+<ul>
+<li><p>创建共享的ViewModel</p>
+</li>
+<li><p>在Fragment中定义回调接口，并要求宿主Activity实现此接口，当Activity通过该接口收到回调时，可根据需要与布局中其他Fragment共享这些信息。</p>
+<p>场景：将AFragment里的数据传递给BFragment，通讯流程为 FragmentA -&gt; Activity -&gt; FragmentB</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> public class FragmentA : Fragment() &#123;</span><br><span class="line">    ...</span><br><span class="line">    &#x2F;&#x2F; Container Activity must implement this interface</span><br><span class="line">    interface OnMessageListener &#123;</span><br><span class="line">        fun onMessage(text: String)</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>宿主Activity会实现该接口并重写 onMessage(text: String) 方法，将来自A的消息传递给B。为了保证宿主Activity实现了该接口，A Fragment的onAttach方法中要对宿主Activity是否实现该接口进行判断：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> public class FragmentA : Fragment() &#123;</span><br><span class="line"></span><br><span class="line">    var listener: OnMessageListener? &#x3D; null</span><br><span class="line">    ...</span><br><span class="line">    override fun onAttach(context: Context) &#123;</span><br><span class="line">        super.onAttach(context)</span><br><span class="line">        listener &#x3D; context as? OnMessageListener</span><br><span class="line">        if (listener &#x3D;&#x3D; null) &#123;</span><br><span class="line">            throw ClassCastException(&quot;$context must implement OnMessageListener&quot;)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果 Activity 未实现接口，则片段会抛出 ClassCastException。<br>若实现成功，mListener 成员会保留对 Activity 的 OnMessageListener 实现的引用，以便片段 A 可通过调用 OnMessageListener 接口定义的方法与 Activity 共享事件。</p>
+<p>最后A通过一些时机来调用OnMessage方法来与Activity共享事件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> private fun configViews() &#123;</span><br><span class="line">    homeFragBtn.setOnClickListener &#123;</span><br><span class="line">        configPrint()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private fun  configPrint() &#123;</span><br><span class="line">    val text &#x3D; &quot;this is coming from AFragment!&quot;</span><br><span class="line">    listener?.OnMessage(text)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h2 id="Fragment的生命周期管理"><a href="#Fragment的生命周期管理" class="headerlink" title="Fragment的生命周期管理"></a>Fragment的生命周期管理</h2><p>与Activity相似，Fragment也存在三种状态<br><em>已恢复</em><br>Fragment在运行中的Activity中可见<br><em>已暂停</em><br>另一个 Activity 位于前台并具有焦点，但此fragment所在的 Activity 仍然可见（前台 Activity 部分透明，或未覆盖整个屏幕）。<br><em>已停止</em><br>Fragment不可见。宿主 Activity 已停止，或Fragment已从 Activity 中移除，但已添加到返回栈。<br>已停止的Fragment仍处于活动状态（系统会保留所有状态和成员信息）。不过，它对用户不再可见，并随 Activity 的终止而终止。</p>
+<p>与 Activity 一样，您也可使用 onSaveInstanceState(Bundle)、ViewModel 和持久化本地存储的组合，在配置变更和进程终止后保留Fragment的界面状态。</p>
+<p>对于 Activity 生命周期与 Fragment 生命周期而言，二者最显著的差异是在其各自返回栈中的存储方式。<br>默认情况下，Activity 停止时会被放入由系统管理的 Activity 返回栈中（以便用户通过返回按钮回退到 Activity，详细介绍请参阅任务和返回栈）。<br>不过，只有当您在移除 Fragment 的事务执行期间通过调用 addToBackStack() 显式请求保存实例时，系统才会将 Fragment 放入由宿主 Activity 管理的返回栈。</p>
+<p><em>如果您的 Fragment 中需要 Context 对象，则可以调用 getContext()。但请注意，只有在该Fragment附加到 Activity 时才需调用 getContext()。如果尚未附加该Fragment，或者其在生命周期结束期间已分离，则 getContext() 返回 null。</em></p>
+<h3 id="onCreate"><a href="#onCreate" class="headerlink" title="onCreate"></a>onCreate</h3><p>创建Fragment时调用，当fragment暂停或停止后恢复时，如果你希望保留此fragment中当基本组件，则应在您当实现中将其初始化。</p>
+<h3 id="onCreateView"><a href="#onCreateView" class="headerlink" title="onCreateView"></a>onCreateView</h3><p>系统会在Fragment首次绘制其界面时调用此方法。如要为您的Fragment绘制界面，您从此方法中返回的 View 必须是Fragment布局的根视图。如果未提供界面，您可以返回 null。</p>
+<h3 id="onPause"><a href="#onPause" class="headerlink" title="onPause"></a>onPause</h3><p>系统会将此方法作为用户离开Fragment的第一个信号（但并不总是意味着此Fragment会被销毁）进行调用。通常，您应在此方法内确认在当前用户会话结束后仍然有效的任何更改（因为用户可能不会返回）。</p>
+<h2 id="与Activity生命周期协调一致"><a href="#与Activity生命周期协调一致" class="headerlink" title="与Activity生命周期协调一致"></a>与Activity生命周期协调一致</h2><p>Fragment 所在 Activity 的生命周期会直接影响Fragment的生命周期，其表现为，Activity 的每次生命周期回调都会引发每个Fragment的类似回调。<br>例如，当 Activity 收到 onPause() 时，Activity 中的每个 Fragment 也会收到 onPause()。</p>
+<p>不过，Fragment 还有几个额外的生命周期回调，用于处理与 Activity 的唯一交互，从而执行构建和销毁片段界面等操作。这些额外的回调方法是：</p>
+<ul>
+<li>onAttach()<br>  在 Fragment 已与 Activity 关联时进行调用（Activity 传递到此方法内）。</li>
+<li>onCreateView()<br>  调用它可创建与 Fragment 关联的视图层次结构。</li>
+<li>onActivityCreated()<br>  当 Activity 的 onCreate() 方法已返回时进行调用。</li>
+<li>onDestroyView()<br>  在移除与 Fragment 关联的视图层次结构时进行调用。</li>
+<li>onDetach()<br>  在取消 Fragment 与 Activity 的关联时进行调用。</li>
+</ul>
+<h2 id="关于添加多个Fragment的重叠问题"><a href="#关于添加多个Fragment的重叠问题" class="headerlink" title="关于添加多个Fragment的重叠问题"></a>关于添加多个Fragment的重叠问题</h2><ol>
+<li>重启情况，在onCreate中加载Fragment，并没有判断并且没有判断saveInstanceState==null或if(findFragmentByTag(mFragmentTag) ==null)， 导致重复加载同一个Fragment导致重叠。</li>
+<li>错误调用情况，在加载多个Fragment时，没有使用hide方法，导致多个Fragment重叠</li>
+</ol>
+<p><em>replace情况下，如果没有加入回退栈，则不判断也不会造成重叠。</em></p>
+<p>解决方案<br>在onCreate方法中对saveInstanceState进行判断，对于首次初始化进行add操作，恢复时进行hide/show操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">private fun configViews(savedInstanceState: Bundle?) &#123;</span><br><span class="line">    val fragmentManager&#x3D; supportFragmentManager</span><br><span class="line">    val aFragment &#x3D; AFragment.newInstance()</span><br><span class="line">    if (savedInstanceState !&#x3D; null) &#123;</span><br><span class="line">        fragmentManager.beginTransaction()</span><br><span class="line">            .hide(bFragment)</span><br><span class="line">            .show(aFragment)</span><br><span class="line">            .addToBackStack(null)</span><br><span class="line">            .commit()</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        fragmentManager.beginTransaction().add(R.id.contentCl, aFragment)</span><br><span class="line">            .hide(bFragment)</span><br><span class="line">            .addToBackStack(null)</span><br><span class="line">            .commit()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Fragment的生命周期与Activity的生命周期"><a href="#Fragment的生命周期与Activity的生命周期" class="headerlink" title="Fragment的生命周期与Activity的生命周期"></a>Fragment的生命周期与Activity的生命周期</h2></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Chunyu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yoursite.com/2019/10/06/Fragment%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">http://yoursite.com/2019/10/06/Fragment%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yoursite.com" target="_blank">JcyDs' Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/cover/7.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2020/05/08/Android%E4%B8%AD%E7%9A%84Context/"><img class="prev-cover" data-src="/img/cover/10.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Android中的Context</div></div></a></div></nav></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By Chunyu</div><div class="framework-info"></div><div class="icp"><a href="http://www.beian.miit.gov.cn/state/outPortal/loginPortal.action" target="_blank" rel="noopener"><img class="icp-icon" src="/img/icp.png"/><span>吉ICP备17007589号</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">简</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
